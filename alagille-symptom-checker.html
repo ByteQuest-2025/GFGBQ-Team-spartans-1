@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alagille Syndrome Symptom Checker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', Arial, sans-serif; background: linear-gradient(135deg, #e0f2fe 0%, #f0fdf4 100%); margin: 0; padding: 20px; min-height: 100vh; color: #1e293b; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 40px; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
+        header { text-align: center; margin-bottom: 40px; }
+        h1 { font-size: 2.8rem; font-weight: 700; color: #0ea5e9; margin: 0; }
+        .subtitle { font-size: 1.1rem; color: #64748b; margin: 10px 0 0; }
+        h2 { font-size: 1.6rem; color: #1e293b; border-bottom: 2px solid #e0f2fe; padding-bottom: 12px; margin-bottom: 30px; }
+        label { display: block; margin: 20px 0 8px; font-weight: 600; color: #334155; }
+        select { width: 100%; padding: 14px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 1rem; background: #f8fafc; }
+        select:focus { outline: none; border-color: #0ea5e9; box-shadow: 0 0 0 3px rgba(14,165,233,0.15); }
+        button { background: #10b981; color: white; padding: 16px; border: none; border-radius: 12px; cursor: pointer; font-size: 1.2rem; font-weight: 600; width: 100%; margin-top: 30px; transition: background 0.3s; }
+        button:hover { background: #059669; }
+        .results { margin-top: 50px; padding: 30px; background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%); border-radius: 16px; border: 1px solid #bbf7d0; display: none; }
+        .disclaimer { font-size: 0.9rem; color: #64748b; margin-top: 20px; font-style: italic; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Alagille Syndrome Symptom Checker</h1>
+            <p class="subtitle">Educational Tool for Hallmark Features (Separate from Lucid Trace)</p>
+        </header>
+        
+        <section>
+            <h2>Check for Classic Signs</h2>
+            <p>Select Yes/No for observed features (based on caregiver/physician observation).</p>
+            
+            <form id="symptomForm">
+                <label>Persistent jaundice (yellow skin/eyes) or severe pruritus (itching):</label>
+                <select id="jaundice_pruritus"><option value="0">No</option><option value="1">Yes</option></select>
+                
+                <label>Characteristic facial features (broad/prominent forehead, deep-set eyes, pointed chin):</label>
+                <select id="facial_features"><option value="0">No</option><option value="1">Yes</option></select>
+                
+                <label>Heart murmur or known cardiac anomaly (e.g., pulmonary stenosis):</label>
+                <select id="cardiac"><option value="0">No</option><option value="1">Yes</option></select>
+                
+                <label>Poor growth or failure to thrive:</label>
+                <select id="growth"><option value="0">No</option><option value="1">Yes</option></select>
+                
+                <label>Xanthomas (cholesterol deposits on skin):</label>
+                <select id="xanthomas"><option value="0">No</option><option value="1">Yes</option></select>
+                
+                <button type="submit">Evaluate Features</button>
+            </form>
+            
+            <div class="disclaimer">
+                This is an educational tool only. Alagille syndrome diagnosis requires professional medical evaluation, including genetic testing and bile duct assessment. Classic criteria often involve 3+ features.
+            </div>
+        </section>
+        
+        <section class="results" id="results">
+            <h2>Results</h2>
+            <div id="featureCount"></div>
+            <p id="explanation"></p>
+        </section>
+    </div>
+    
+    <script>
+        document.getElementById('symptomForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const count = 
+                parseInt(document.getElementById('jaundice_pruritus').value) +
+                parseInt(document.getElementById('facial_features').value) +
+                parseInt(document.getElementById('cardiac').value) +
+                parseInt(document.getElementById('growth').value) +
+                parseInt(document.getElementById('xanthomas').value);
+            
+            document.getElementById('featureCount').innerHTML = `<strong>Number of hallmark features selected: ${count}/5</strong>`;
+            
+            let explanation = '';
+            if (count >= 3) {
+                explanation = 'Multiple classic features are present. This may warrant specialist evaluation (e.g., pediatric gastroenterologist or geneticist) for Alagille syndrome, especially with liver or heart concerns.';
+            } else if (count >= 1) {
+                explanation = 'Some features are present. Monitoring and consultation are recommended if combined with lab trends or family history.';
+            } else {
+                explanation = 'No hallmark features selected. This tool focuses on classic signs; early detection may still involve non-obvious signals.';
+            }
+            
+            document.getElementById('explanation').innerText = explanation;
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
