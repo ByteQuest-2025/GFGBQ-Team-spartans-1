@@ -1,0 +1,168 @@
+import torch
+import torch.nn as nn
+import torch.optim as optim
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+
+# Define the neural network model for risk detection
+class RiskDetector(nn.Module):
+    """
+    A multi-layer perceptron for predicting Alagille syndrome risk probability.
+    Input: Aggregated health signals.
+    Output: Probability score (0 to 1).
+    """
+    def __init__(self, input_size):
+        super(RiskDetector, self).__init__()
+        self.fc1 = nn.Linear(input_size, 64)  # Input to hidden layer
+        self.fc2 = nn.Linear(64, 32)          # Hidden layer
+        self.fc3 = nn.Linear(32, 1)           # Output layer
+        self.sigmoid = nn.Sigmoid()           # For probability output
+
+    def forward(self, x):
+        x = torch.relu(self.fc1(x))
+        x = torch.relu(self.fc2(x))
+        x = self.sigmoid(self.fc3(x))
+        return x
+
+# Generate synthetic dataset based on Alagille syndrome indicators
+def generate_synthetic_data(num_samples=1000):
+    """
+    Creates synthetic data simulating health signals for Alagille syndrome.
+    Features include lab trends (e.g., bilirubin slope), lifestyle, stress, and family history.
+    Target is a simulated risk score influenced by these factors.
+    """
+    np.random.seed(42)
+    data = {
+        'age': np.random.uniform(0, 18, num_samples),  # Pediatric focus, as syndrome often presents in childhood
+        'family_history': np.random.choice([0, 1], num_samples, p=[0.9, 0.1]),  # 10% positive, reflecting genetic rarity
+        'bilirubin_trend': np.random.normal(0, 1, num_samples),  # Slope of bilirubin levels over time
+        'cholesterol_level': np.random.normal(200, 50, num_samples),  # Elevated in cholestasis
+        'ggt_level': np.random.normal(50, 20, num_samples),  # Gamma-glutamyl transferase, liver marker
+        'activity_level': np.random.normal(5, 2, num_samples),  # Hours of activity per week
+        'sleep_hours': np.random.normal(8, 1, num_samples),  # Average daily sleep
+        'nutrition_score': np.random.normal(70, 10, num_samples),  # 0-100 scale, lower indicates malabsorption risk
+        'stress_score': np.random.normal(50, 15, num_samples),  # 0-100 scale, higher indicates mental health strain
+    }
+    
+    # Simulate risk probability: Weighted by genetic and lab factors, modulated by lifestyle
+    risk = (data['family_history'] * 0.5 +  # Strong genetic influence
+            np.where(data['bilirubin_trend'] > 1, 0.1, 0) +
+            np.where(data['cholesterol_level'] > 250, 0.1, 0) +
+            np.where(data['ggt_level'] > 70, 0.1, 0) +
+            np.where(data['activity_level'] < 3, 0.05, 0) +
+            np.where(data['sleep_hours'] < 7, 0.05, 0) +
+            np.where(data['nutrition_score'] < 60, 0.05, 0) +
+            np.where(data['stress_score'] > 70, 0.05, 0))
+    
+    risk = np.clip(risk + np.random.normal(0, 0.05, num_samples), 0, 1)  # Add noise and clamp to [0,1]
+    data['risk'] = risk
+    
+    df = pd.DataFrame(data)
+    return df
+
+# Train the model on synthetic data
+def train_model():
+    """
+    Trains the RiskDetector model using synthetic data.
+    Saves the trained model and scaler for inference.
+    """
+    df = generate_synthetic_data()
+    features = df.drop('risk', axis=1)
+    target = df['risk']
+    
+    scaler = StandardScaler()
+    features_scaled = scaler.fit_transform(features)
+    
+    X_train, X_test, y_train, y_test = train_test_split(
+        features_scaled, target, test_size=0.2, random_state=42
+    )
+    
+    input_size = features.shape[1]
+    model = RiskDetector(input_size)
+    criterion = nn.MSELoss()  # Mean squared error for regression-like probability
+    optimizer = optim.Adam(model.parameters(), lr=0.001)
+    
+    X_train_tensor = torch.FloatTensor(X_train)
+    y_train_tensor = torch.FloatTensor(y_train.values).unsqueeze(1)
+    
+    for epoch in range(100):  # Train for 100 epochs
+        optimizer.zero_grad()
+        outputs = model(X_train_tensor)
+        loss = criterion(outputs, y_train_tensor)
+        loss.backward()
+        optimizer.step()
+    
+    # Save model and scaler
+    torch.save(model.state_dict(), 'alagille_risk_model.pth')
+    np.save('scaler_mean.npy', scaler.mean_)
+    np.save('scaler_scale.npy', scaler.scale_)
+    
+    return model, scaler
+
+# Load the trained model and scaler
+def load_model():
+    """
+    Loads the pre-trained model and scaler for predictions.
+    """
+    input_size = 9  # Fixed number of input features
+    model = RiskDetector(input_size)
+    model.load_state_dict(torch.load('alagille_risk_model.pth'))
+    model.eval()
+    scaler = StandardScaler()
+    scaler.mean_ = np.load('scaler_mean.npy')
+    scaler.scale_ = np.load('scaler_scale.npy')
+    return model, scaler
+
+# Predict risk probability for user-provided data
+def predict_risk(user_data):
+    """
+    Aggregates user health signals and computes risk probability.
+    user_data: Dictionary with keys matching feature names.
+    Returns: Float probability (0 to 1).
+    """
+    model, scaler = load_model()
+    user_df = pd.DataFrame([user_data])
+    user_scaled = scaler.transform(user_df)
+    user_tensor = torch.FloatTensor(user_scaled)
+    with torch.no_grad():
+        risk_prob = model(user_tensor).item()
+    return risk_prob
+
+# Generate preventive recommendations based on risk score
+def get_recommendations(risk_prob):
+    """
+    Provides tailored preventive actions for patients and doctors.
+    Recommendations are stratified by risk level.
+    """
+    if risk_prob < 0.2:
+        return "Low estimated risk of early Alagille syndrome. Recommend maintaining a balanced diet rich in vitamins, regular physical activity, and annual pediatric check-ups to monitor growth and liver function."
+    elif risk_prob < 0.5:
+        return "Moderate estimated risk. Suggest consulting a pediatric gastroenterologist for liver enzyme monitoring (e.g., bilirubin, GGT trends) and genetic counseling if family history indicates potential inheritance. Improve lifestyle factors such as sleep hygiene and nutrition to mitigate potential exacerbations."
+    else:
+        return "High estimated risk. Advise immediate evaluation by a specialist, including genetic testing for JAG1/NOTCH2 mutations, echocardiography for cardiac anomalies, and spinal imaging if skeletal concerns arise. Preventive measures include vitamin supplementation for malabsorption and stress management techniques."
+
+# Main execution block
+if __name__ == '__main__':
+    print("Training the Lucid Trace model for Alagille syndrome risk detection...")
+    train_model()
+    print("Model trained and saved successfully.")
+    
+    # Example user data for testing (simulating a high-risk pediatric case)
+    example_data = {
+        'age': 5.0,                  # Years
+        'family_history': 1,         # 1 if positive family history
+        'bilirubin_trend': 1.5,      # Positive trend indicating increase
+        'cholesterol_level': 280.0,  # Elevated
+        'ggt_level': 80.0,           # Elevated
+        'activity_level': 2.0,       # Low activity
+        'sleep_hours': 6.0,          # Insufficient sleep
+        'nutrition_score': 55.0,     # Poor nutrition
+        'stress_score': 75.0         # High stress
+    }
+    
+    risk_prob = predict_risk(example_data)
+    print(f"Predicted risk probability for example data: {risk_prob:.2f}")
+    print("Recommendations:")
+    print(get_recommendations(risk_prob))
