@@ -1,0 +1,88 @@
+/* General styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background: #f0f4f8;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    color: #fff;
+    padding: 1.5rem;
+    text-align: center;
+}
+
+h1, h2 {
+    margin: 0.5rem 0;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 2rem;
+}
+
+/* Interactive Card */
+.interactive-card {
+    background: linear-gradient(135deg, #ff758c, #ff7eb3);
+    padding: 1.5rem;
+    border-radius: 1rem;
+    margin-top: 2rem;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    color: #fff;
+    width: 90%;
+    max-width: 500px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.interactive-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+}
+
+.interactive-card input {
+    width: 80%;
+    padding: 0.8rem;
+    border-radius: 50px;
+    border: none;
+    margin: 1rem 0;
+    font-size: 1rem;
+    text-align: center;
+}
+
+.interactive-card button {
+    background: linear-gradient(90deg, #00c6ff, #0072ff);
+    border: none;
+    padding: 0.8rem 2rem;
+    border-radius: 50px;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.interactive-card button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+}
+
+/* Result Card */
+.result-card {
+    background: linear-gradient(120deg, #f7971e, #ffd200);
+    padding: 1rem;
+    margin-top: 1rem;
+    border-radius: 1rem;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    font-weight: 600;
+    transition: transform 0.3s ease;
+    color: #000;
+}
+
+.result-card p {
+    margin: 0.5rem 0;
+    font-size: 1rem;
+}
