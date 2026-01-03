@@ -11,3 +11,5 @@ The project demonstrates this approach using **Alagille Syndrome**, a rare genet
 - Late detection leads to irreversible damage  
 Lucid Trace focuses on **pattern-based symptom analysis** rather than diagnosis.
 licid trace help in assessment of assisting symptoms 
+
+project completed at 10.00pm
