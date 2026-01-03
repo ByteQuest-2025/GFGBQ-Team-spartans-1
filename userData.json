@@ -1,0 +1,19 @@
+{
+  "lab": {
+    "liverEnzymes": 45,
+    "cholesterol": 210
+  },
+  "lifestyle": {
+    "sleepHours": 6,
+    "activityLevel": "moderate",
+    "nutritionScore": 70
+  },
+  "mentalHealth": {
+    "stressLevel": 7,
+    "moodScore": 4
+  },
+  "familyHistory": {
+    "heartDisease": true,
+    "rareDiseases": ["Alagille Syndrome"]
+  }
+}
