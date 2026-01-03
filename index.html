@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lucid Trace - Early Risk Detection for Alagille Syndrome</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Lucid Trace</h1>
+            <p class="subtitle">AI-Driven Early Risk Detection System for Alagille Syndrome</p>
+        </header>
+        
+        <section class="input-form">
+            <h2>Enter Health Signals</h2>
+            <form id="riskForm">
+                <label>Family History of Alagille or Related Liver/Heart Issues:</label>
+                <select id="family_history">
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                </select>
+                
+                <label>Bilirubin Trend (slope over time, mg/dL/month):</label>
+                <input type="number" step="0.1" id="bilirubin_trend" placeholder="e.g., 0.5">
+                
+                <label>Cholesterol Level (mg/dL):</label>
+                <input type="number" id="cholesterol" placeholder="e.g., 280">
+                
+                <label>GGT Level (U/L):</label>
+                <input type="number" id="ggt" placeholder="e.g., 80">
+                
+                <label>Weekly Activity (hours):</label>
+                <input type="number" id="activity" placeholder="e.g., 2">
+                
+                <label>Average Daily Sleep (hours):</label>
+                <input type="number" step="0.5" id="sleep" placeholder="e.g., 6">
+                
+                <label>Nutrition Score (0-100, higher better):</label>
+                <div class="assess-group">
+                    <input type="number" min="0" max="100" id="nutrition" placeholder="e.g., 55">
+                    <button type="button" class="assess-btn" id="assessNutrition">Assess</button>
+                </div>
+                
+                <label>Stress Score (0-100, higher worse):</label>
+                <div class="assess-group">
+                    <input type="number" min="0" max="100" id="stress" placeholder="e.g., 75">
+                    <button type="button" class="assess-btn" id="assessStress">Assess</button>
+                </div>
+                
+                <button type="submit" class="calculate-btn">Calculate Risk</button>
+            </form>
+        </section>
+        
+        <section class="results" id="results" style="display:none;">
+            <h2>Results</h2>
+            <div id="riskScore"></div>
+            <div id="recommendations"></div>
+        </section>
+    </div>
+
+    <!-- Modals (unchanged structure) -->
+    <div id="nutritionModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Nutrition Self-Assessment</h3>
+            <p>Answer the questions to calculate your Nutrition Score (higher = better).</p>
+            <div id="nutritionQuestions"></div>
+            <button class="modal-btn" id="calculateNutrition">Calculate & Fill Score</button>
+        </div>
+    </div>
+
+    <div id="stressModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Stress Self-Assessment</h3>
+            <p>Answer the questions to calculate your Stress Score (higher = worse).</p>
+            <div id="stressQuestions"></div>
+            <button class="modal-btn" id="calculateStress">Calculate & Fill Score</button>
+        </div>
+    </div>
+    
+    <script type="module" src="app.js"></script>
+</body>
+</html>
