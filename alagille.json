@@ -1,0 +1,13 @@
+{
+  "name": "Alagille Syndrome",
+  "symptoms": {
+    "jaundice": 0.5,
+    "itching": 0.3,
+    "fatigue": 0.2,
+    "heartdefect": 0.4,
+    "cholestasis": 0.4,
+    "kidneyissue": 0.3,
+    "growthdelay": 0.3,
+    "eyeabnormality": 0.2
+  }
+}
