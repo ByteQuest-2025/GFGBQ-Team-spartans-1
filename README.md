@@ -15,5 +15,9 @@ licid trace help in assessment of assisting symptoms
 project completed at 10.00pm
 screenshot link
 https://drive.google.com/file/d/19jOs3-bg3FM6YqlPzRrYQOmPkQsYg3HS/view?usp=drivesdk
+
 demo video 
 https://drive.google.com/file/d/1PXMryXRuJw9GMYRmHSec2hCXsPBbAk0R/view?usp=drivesdk
+
+ppt
+https://docs.google.com/presentation/d/11YnG1h8AqDOGcnaLg7N1DMK2PGR-Vvbw/edit?usp=drivesdk&ouid=101650863247856094066&rtpof=true&sd=true
